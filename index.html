@@ -48,6 +48,7 @@
     .button-container {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 40px;
     }
@@ -70,15 +71,58 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
 
-    form {
-      background: rgba(255, 255, 255, 0.1);
+    /* Ponnahdusikkuna (modal) */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-bg.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, #ff9d1a, #ffb84d);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      border-radius: 18px;
       padding: 30px;
-      border-radius: 16px;
       width: 90%;
       max-width: 550px;
-      margin: auto;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
+      color: white;
+      transform: translateY(-30px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .modal-bg.active .modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.6em;
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      cursor: pointer;
     }
 
     input, textarea {
@@ -100,11 +144,17 @@
 
     #submit {
       background: linear-gradient(135deg, #ff7b00, #ffbb00);
-      transition: background 0.5s ease;
+      transition: all 0.5s ease;
     }
 
     #submit.ready {
       background: linear-gradient(135deg, #00b34a, #00e65a);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #00ff73; }
+      to { box-shadow: 0 0 25px #00ff73; }
     }
 
     footer {
@@ -155,17 +205,25 @@
   <div class="button-container">
     <button onclick="showServerInfo()">Minecraft-serverin IP</button>
     <button onclick="window.open('https://discord.gg/bFCbWS5Kz6')">Discord</button>
+    <button onclick="openModal()">Hae CropitSMP:lle</button>
   </div>
 
-  <form id="applyForm">
-    <input type="text" id="name" placeholder="Minecraft-nimi" required>
-    <input type="text" id="age" placeholder="Ikä" required>
-    <input type="text" id="strengths" placeholder="Vahvuudet" required>
-    <input type="text" id="weaknesses" placeholder="Heikkoudet" required>
-    <textarea id="reason" placeholder="Miksi haluat CropitSMP:lle?" required></textarea>
-    <textarea id="other" placeholder="Muuta" required></textarea>
-    <button type="submit" id="submit">Lähetä hakemus</button>
-  </form>
+  <!-- Hakemus-ponnahdus -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <h2>CropitSMP Hakemus</h2>
+      <form id="applyForm">
+        <input type="text" id="name" placeholder="Minecraft-nimi">
+        <input type="text" id="age" placeholder="Ikä">
+        <input type="text" id="strengths" placeholder="Vahvuudet">
+        <input type="text" id="weaknesses" placeholder="Heikkoudet">
+        <textarea id="reason" placeholder="Miksi haluat CropitSMP:lle?"></textarea>
+        <textarea id="other" placeholder="Muuta"></textarea>
+        <button type="submit" id="submit">Lähetä hakemus</button>
+      </form>
+    </div>
+  </div>
 
   <div class="notice">
     ⚠️ Croppien palvelimilla pelaamalla hyväksyt, että tapahtumien yhteydessä sinusta voidaan tuottaa sosiaalisen median sisältöä. ⚠️
@@ -176,6 +234,7 @@
   </footer>
 
   <script>
+    const modalBg = document.getElementById('modalBg');
     const form = document.getElementById('applyForm');
     const submitBtn = document.getElementById('submit');
     const webhookURL = "https://discord.com/api/webhooks/1432615073657913404/DmpECDtO8zx91vVKXRALw9F2zyVgKS3u5JSHMzOwVcrEjQIkzkgahlFcbrQCY2lNioSl";
@@ -186,6 +245,14 @@
       popup.textContent = msg;
       document.body.appendChild(popup);
       setTimeout(() => popup.remove(), 2000);
+    }
+
+    function openModal() {
+      modalBg.classList.add('active');
+    }
+
+    function closeModal() {
+      modalBg.classList.remove('active');
     }
 
     function showServerInfo() {
@@ -200,20 +267,22 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = form.name.value.trim();
-      const age = form.age.value.trim();
-      const strengths = form.strengths.value.trim();
-      const weaknesses = form.weaknesses.value.trim();
-      const reason = form.reason.value.trim();
-      const other = form.other.value.trim();
+      const data = {
+        name: form.name.value.trim(),
+        age: form.age.value.trim(),
+        strengths: form.strengths.value.trim(),
+        weaknesses: form.weaknesses.value.trim(),
+        reason: form.reason.value.trim(),
+        other: form.other.value.trim()
+      };
 
-      if (!name || !age || !strengths || !weaknesses || !reason || !other) {
+      if (Object.values(data).some(v => v === "")) {
         showPopup("Täytä kaikki kohdat ennen lähettämistä!");
         return;
       }
 
       const payload = {
-        content: `📝 **Uusi hakemus CropitSMP:lle**\n**Nimi:** ${name}\n**Ikä:** ${age}\n**Vahvuudet:** ${strengths}\n**Heikkoudet:** ${weaknesses}\n**Miksi mukaan:** ${reason}\n**Muuta:** ${other}`
+        content: `📝 **Uusi hakemus CropitSMP:lle**\n**Nimi:** ${data.name}\n**Ikä:** ${data.age}\n**Vahvuudet:** ${data.strengths}\n**Heikkoudet:** ${data.weaknesses}\n**Miksi mukaan:** ${data.reason}\n**Muuta:** ${data.other}`
       };
 
       try {
@@ -225,6 +294,7 @@
         showPopup("✅ Hakemus lähetetty onnistuneesti!");
         form.reset();
         submitBtn.classList.remove('ready');
+        setTimeout(() => closeModal(), 1500);
       } catch {
         showPopup("❌ Virhe hakemuksen lähettämisessä!");
       }
