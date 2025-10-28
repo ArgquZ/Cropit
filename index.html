@@ -1,263 +1,236 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cropit</title>
-  <link rel="icon" type="image/png" href="Cropiserverinlogo.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cropit - Hakemus SMP:lle</title>
+  <link rel="icon" href="Cropiserverinlogo.png">
   <style>
     body {
-      font-family: "Poppins", sans-serif;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
-      background: linear-gradient(135deg, #ff8c00, #ffd54f);
-      color: #fff;
+      padding: 0;
+      background: linear-gradient(135deg, #ff8800, #ffcc00);
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 10px;
     }
 
     header img {
-      width: 140px;
-      margin-bottom: 20px;
+      width: 180px;
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
     h1 {
-      font-size: 2.8rem;
-      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 10px;
+      font-size: 2.5em;
+      color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
     }
 
-    .buttons {
-      margin-top: 30px;
+    .button-container {
+      margin-top: 20px;
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
+      gap: 15px;
     }
 
     button {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 12px 24px;
-      font-size: 1.1rem;
-      color: white;
+      padding: 12px 20px;
+      font-size: 1.1em;
       cursor: pointer;
-      transition: all 0.25s;
-      backdrop-filter: blur(4px);
+      transition: 0.2s;
     }
 
     button:hover {
-      background-color: rgba(255, 255, 255, 0.4);
       transform: scale(1.05);
+      background-color: #f0f0f0;
     }
 
-    .popup-bg {
-      display: none;
+    .form-popup, .alert-popup {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(6px);
-      padding: 25px 0;
-      text-align: center;
-      animation: slideUp 0.4s ease;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .form-container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 25px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 420px;
-      margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 10px;
-      font-family: inherit;
-      resize: none;
-    }
-
-    textarea { height: 80px; }
-
-    .close-btn {
-      background: #ff5555;
-      margin-top: 10px;
-    }
-
-    .success {
-      color: #00ff8c;
-      margin-top: 10px;
-    }
-
-    /* Popup keskelle */
-    .center-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
+      bottom: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      padding: 25px 35px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.4);
-      font-size: 1.2rem;
-      text-align: center;
-      animation: popIn 0.3s ease forwards;
+      transform: translate(-50%, 50%) scale(0);
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transition: 0.3s ease;
       z-index: 10;
-      backdrop-filter: blur(10px);
+      width: 320px;
+      text-align: center;
     }
 
-    @keyframes popIn {
-      from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .form-popup.active, .alert-popup.active {
+      transform: translate(-50%, 50%) scale(1);
     }
 
-    .fadeOut {
-      animation: fadeOut 0.3s ease forwards;
+    .form-popup h2 {
+      color: #ff8800;
+      margin-bottom: 15px;
     }
 
-    @keyframes fadeOut {
-      from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      to { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    .form-popup input, .form-popup textarea {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    .form-popup textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .form-popup button {
+      margin-top: 10px;
+      width: 100%;
+      background-color: #ff9900;
+      color: white;
+      font-weight: bold;
+    }
+
+    .form-popup button:hover {
+      background-color: #ffaa33;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 5;
+    }
+
+    .overlay.active {
+      display: block;
     }
 
     footer {
-      position: absolute;
-      bottom: 10px;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.9rem;
+      margin-top: auto;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 0.9em;
+    }
+
+    footer p {
+      margin: 8px 0;
+    }
+
+    .warning {
+      font-weight: 600;
+      color: #fffbea;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="Cropiserverinlogo.png" alt="Cropit Logo" />
+    <img src="Cropiserverinlogo.png" alt="Cropit Logo">
     <h1>Cropit</h1>
+    <div class="button-container">
+      <button id="applyBtn">Hae CropitSMP:lle</button>
+      <button id="ipBtn">Minecraft-serverin IP</button>
+      <button onclick="window.open('https://discord.gg/bFCbWS5Kz6')">Discord</button>
+    </div>
   </header>
 
-  <div class="buttons">
-    <button onclick="window.open('https://discord.gg/bFCbWS5Kz6')">Discord</button>
-    <button onclick="showServerPopup()">Minecraft-serverin IP</button>
-    <button onclick="togglePopup()">Hae CropitSMP:lle</button>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="form-popup" id="formPopup">
+    <h2>CropitSMP Hakemus</h2>
+    <input type="text" id="nimi" placeholder="Nimi">
+    <input type="text" id="minecraft" placeholder="Minecraft-nimi">
+    <input type="text" id="aktiivisuus" placeholder="Kuinka aktiivinen olet?">
+    <input type="text" id="vahvuudet" placeholder="Vahvuudet">
+    <input type="text" id="heikkoudet" placeholder="Heikkoudet">
+    <textarea id="muuta" placeholder="Muuta..."></textarea>
+    <button onclick="lahetaHakemus()">Lähetä hakemus</button>
   </div>
 
-  <div class="popup-bg" id="popup">
-    <div class="form-container">
-      <h2>CropitSMP Hakemus</h2>
-      <input type="text" id="ign" placeholder="Minecraft-nimi">
-      <textarea id="reason" placeholder="Miksi haluat liittyä?"></textarea>
-      <textarea id="strengths" placeholder="Vahvuudet"></textarea>
-      <textarea id="weaknesses" placeholder="Heikkoudet"></textarea>
-      <textarea id="activity" placeholder="Kuinka aktiivinen olet?"></textarea>
-      <textarea id="other" placeholder="Muuta"></textarea>
-      <button onclick="sendApplication()">Lähetä hakemus</button>
-      <button class="close-btn" onclick="togglePopup()">Sulje</button>
-      <p class="success" id="success-msg"></p>
-    </div>
+  <div class="alert-popup" id="alertPopup">
+    <p id="alertMessage"></p>
+    <button onclick="suljeAlert()">OK</button>
   </div>
 
-  <div class="center-popup" id="error-popup">Täytä kaikki kohdat ennen lähettämistä!</div>
-  <div class="center-popup" id="server-popup">Serveriä ei ole vielä avattu 🔒</div>
-
-  <footer>© 2025 Cropit – Hakemukset käsitellään Discordissa</footer>
+  <footer>
+    <p class="warning">⚠️ Osallistumalla Croppien servereille hyväksyt, että sinusta voidaan tapahtumien yhteydessä tehdä sisältöä sosiaaliseen mediaan. ⚠️</p>
+    <p>&copy; 2025 ArgquZ — Kaikki oikeudet pidätetään. Sivun sisältö ja ulkoasu ovat tekijän omaisuutta, eikä niitä saa kopioida tai julkaista muilla nimillä.
+  </footer></p>
+  </footer>
 
   <script>
+    const overlay = document.getElementById("overlay");
+    const formPopup = document.getElementById("formPopup");
+    const alertPopup = document.getElementById("alertPopup");
+    const alertMessage = document.getElementById("alertMessage");
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1432615073657913404/DmpECDtO8zx91vVKXRALw9F2zyVgKS3u5JSHMzOwVcrEjQIkzkgahlFcbrQCY2lNioSl"; 
 
-    function togglePopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    document.getElementById("applyBtn").onclick = () => {
+      overlay.classList.add("active");
+      formPopup.classList.add("active");
+    };
+
+    overlay.onclick = () => {
+      overlay.classList.remove("active");
+      formPopup.classList.remove("active");
+    };
+
+    document.getElementById("ipBtn").onclick = () => {
+      naytaAlert("Serveriä ei ole vielä avattu!");
+    };
+
+    function naytaAlert(msg) {
+      alertMessage.textContent = msg;
+      overlay.classList.add("active");
+      alertPopup.classList.add("active");
     }
 
-    function showCenterPopup(id, msg, color = "#ff5050") {
-      const popup = document.getElementById(id);
-      popup.textContent = msg;
-      popup.style.background = color;
-      popup.style.display = "block";
-      setTimeout(() => {
-        popup.classList.add("fadeOut");
-        setTimeout(() => {
-          popup.style.display = "none";
-          popup.classList.remove("fadeOut");
-        }, 300);
-      }, 1800);
+    function suljeAlert() {
+      alertPopup.classList.remove("active");
+      overlay.classList.remove("active");
     }
 
-    function showError(msg) {
-      showCenterPopup("error-popup", msg, "rgba(255, 80, 80, 0.95)");
-    }
+    async function lahetaHakemus() {
+      const nimi = document.getElementById("nimi").value.trim();
+      const minecraft = document.getElementById("minecraft").value.trim();
+      const aktiivisuus = document.getElementById("aktiivisuus").value.trim();
+      const vahvuudet = document.getElementById("vahvuudet").value.trim();
+      const heikkoudet = document.getElementById("heikkoudet").value.trim();
+      const muuta = document.getElementById("muuta").value.trim();
 
-    function showServerPopup() {
-      showCenterPopup("server-popup", "Serveriä ei ole vielä avattu 🔒", "rgba(255, 180, 0, 0.9)");
-    }
-
-    async function sendApplication() {
-      const fields = [
-        "ign", "reason", "strengths", "weaknesses", "activity", "other"
-      ];
-      let missing = false;
-
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el.value.trim()) missing = true;
-      });
-
-      if (missing) {
-        showError("Täytä kaikki kohdat ennen lähettämistä!");
+      if (!nimi || !minecraft || !aktiivisuus || !vahvuudet || !heikkoudet || !muuta) {
+        naytaAlert("Täytä kaikki kentät ennen lähettämistä!");
         return;
       }
 
-      const message = {
-        content: "**Uusi CropitSMP-hakemus!**",
-        embeds: [{
-          color: 0xffa500,
-          fields: [
-            { name: "Minecraft-nimi", value: ign.value },
-            { name: "Miksi haluaa liittyä", value: reason.value },
-            { name: "Vahvuudet", value: strengths.value },
-            { name: "Heikkoudet", value: weaknesses.value },
-            { name: "Aktiivisuus", value: activity.value },
-            { name: "Muuta", value: other.value }
-          ],
-          footer: { text: "Lähetetty Cropit-sivulta" }
-        }]
+      const payload = {
+        content: `📜 **Uusi CropitSMP hakemus**\n👤 Nimi: ${nimi}\n🎮 Minecraft: ${minecraft}\n⏰ Aktiivisuus: ${aktiivisuus}\n💪 Vahvuudet: ${vahvuudet}\n😅 Heikkoudet: ${heikkoudet}\n📝 Muuta: ${muuta}`
       };
 
-      const successMsg = document.getElementById("success-msg");
       try {
-        const res = await fetch(WEBHOOK_URL, {
+        await fetch(WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(message)
+          body: JSON.stringify(payload)
         });
-
-        if (res.ok) {
-          successMsg.textContent = "Hakemus lähetetty onnistuneesti!";
-          successMsg.style.color = "#00ff8c";
-          setTimeout(() => togglePopup(), 1500);
-        } else {
-          showError("Virhe lähetyksessä!");
-        }
-      } catch {
-        showError("Virhe yhteydessä!");
+        naytaAlert("Hakemus lähetetty onnistuneesti!");
+        formPopup.classList.remove("active");
+      } catch (err) {
+        naytaAlert("Virhe lähetyksessä. Tarkista yhteys tai webhook!");
       }
     }
   </script>
