@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cropit SMP</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #a4c36b, #6a8f3f);
+      color: #fff;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-image: url('https://i.imgur.com/F3S3hZx.jpeg'); /* voit vaihtaa oman taustan */
+      background-size: cover;
+      background-position: center;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.3rem;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #e7e7e7;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    button, a.button {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #4caf50;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    button:hover, a.button:hover {
+      background: #6bd36e;
+      transform: scale(1.05);
+    }
+
+    /* Toast ilmoitus */
+    .toast {
+      position: fixed;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      opacity: 0;
+      transition: all 0.5s ease;
+      font-size: 1rem;
+    }
+
+    .toast.show {
+      bottom: 30px;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="content">
+    <img src="favicon.png" alt="Cropit logo" style="width:100px; border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.4);">
+    <h1>Cropit SMP</h1>
+    <p>🌾 Uusi suomalainen Minecraft-yhteisö! Tule mukaan viljelemään ja seikkailemaan.</p>
+
+    <div class="buttons">
+      <button id="mcBtn">Pelaa Minecraftissa</button>
+      <a class="button" href="https://discord.gg/bFCbWS5Kz6" target="_blank">Liity Discordiin</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">🌾 Minecraft-IP julkaistaan pian!</div>
+
+  <script>
+    const mcBtn = document.getElementById("mcBtn");
+    const toast = document.getElementById("toast");
+
+    mcBtn.addEventListener("click", () => {
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    });
+  </script>
+</body>
+</html>
