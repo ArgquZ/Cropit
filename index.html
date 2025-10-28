@@ -1,215 +1,167 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cropit SMP</title>
-
-  <!-- Favicon (sama tiedosto kuin logo) -->
-  <link rel="icon" type="image/png" href="./Cropiserverinlogo.png">
-
-  <!-- Apple touch icon -->
-  <link rel="apple-touch-icon" href="./Cropiserverinlogo.png">
-
-  <meta name="theme-color" content="#6a8f3f">
-
+  <link rel="icon" type="image/png" href="Cropiserverinlogo.png">
   <style>
-    :root{
-      --accent:#6a8f3f;
-      --accent-2:#9bc76a;
-      --glass: rgba(255,255,255,0.06);
-      --card-bg: rgba(0,0,0,0.45);
-      --btn-bg: #4caf50;
+    body {
+      font-family: 'Minecraft', sans-serif;
+      background: linear-gradient(#3a7d2f, #1e4020);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
 
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #9fd06b 0%, #5f8a3a 100%);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      color:#fff;
+    header {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 6px black;
     }
 
-    /* Keskitys */
-    .wrap{
-      min-height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px 20px;
-      box-sizing:border-box;
-      position:relative;
+    img.logo {
+      width: 200px;
+      margin-top: 20px;
+      border-radius: 10px;
     }
 
-    .card{
-      width:100%;
-      max-width:980px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12));
-      border-radius:18px;
-      padding:28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      display:flex;
-      gap:24px;
-      align-items:center;
-      justify-content:space-between;
-      backdrop-filter: blur(4px);
+    footer {
+      background: rgba(0, 0, 0, 0.4);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px;
     }
 
-    .brand {
-      display:flex;
-      gap:18px;
-      align-items:center;
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    .logo {
-      width:128px;
-      height:128px;
-      flex:0 0 128px;
-      border-radius:14px;
-      overflow:hidden;
-      display:inline-grid;
-      place-items:center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2));
+    button:hover {
+      background-color: #45a049;
     }
 
-    .logo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+    /* Ponnahduslomake */
+    .popup {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      border: 2px solid #4caf50;
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 0 10px black;
+      z-index: 1000;
+      text-align: left;
     }
 
-    .title h1{
-      margin:0;
-      font-size:2.2rem;
-      letter-spacing:1px;
-      text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    .popup input, .popup textarea {
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
     }
 
-    .title p{
-      margin:6px 0 0 0;
-      color: #eaf6e8;
-      opacity:0.95;
+    .popup button {
+      width: 100%;
+      margin-top: 10px;
+      background-color: #4caf50;
     }
 
-    .actions{
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-
-    .btn{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding:10px 16px;
-      border-radius:10px;
-      background:var(--btn-bg);
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      cursor:pointer;
-      border:none;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-      transition:transform .14s ease, box-shadow .14s ease;
-    }
-
-    .btn:hover{ transform:translateY(-3px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
-
-    .btn.ghost{
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.12);
-      color:#fff;
-    }
-
-    /* Minecraft-tyylin pienempi teksti esille */
-    .sub {
-      margin-top:8px;
-      font-size:0.92rem;
-      color:#f0f9f0;
-      opacity:0.95;
-    }
-
-    /* Toast (alareuna) */
-    .toast {
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%) translateY(120%);
-      bottom:24px;
-      background: rgba(0,0,0,0.85);
-      color:#fff;
-      padding:12px 18px;
-      border-radius:12px;
-      font-weight:600;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-      transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .25s;
-      opacity:0;
-      z-index:9999;
-    }
-    .toast.show {
-      transform:translateX(-50%) translateY(0);
-      opacity:1;
-    }
-
-    /* Responsiivisuus */
-    @media (max-width:700px){
-      .card{
-        flex-direction:column;
-        align-items:center;
-        text-align:center;
-      }
-      .actions{ margin-top:6px; }
+    .close-btn {
+      background-color: #c0392b;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" role="main" aria-labelledby="cropit-title">
-      <div class="brand">
-        <figure class="logo" aria-hidden="true">
-          <img src="./Cropiserverinlogo.png" alt="Cropit-logo">
-        </figure>
+  <header>
+    <img src="Cropiserverinlogo.png" class="logo" alt="Cropit Logo">
+    <h1>Cropit SMP</h1>
+  </header>
 
-        <div class="title">
-          <h1 id="cropit-title">Cropit</h1>
-          <div class="sub">Uusi suomalainen Minecraftyhteisö — tulee pian!</div>
-        </div>
-      </div>
+  <footer>
+    <button onclick="openPopup()">Hae Cropit SMP:lle</button>
+  </footer>
 
-      <div class="actions" role="navigation" aria-label="Toiminnot">
-        <button class="btn" id="mcBtn" aria-describedby="mc-desc">Pelaa Minecraftissa</button>
-        <a class="btn ghost" id="discordBtn" href="https://discord.gg/bFCbWS5Kz6" target="_blank" rel="noopener noreferrer">Liity Discordiin</a>
-      </div>
-    </div>
+  <!-- Ponnahduslomake -->
+  <div class="popup" id="applyPopup">
+    <h3>Cropit SMP - hakemus</h3>
+    <label>Minecraft-nimi:</label>
+    <input type="text" id="ign" placeholder="Minecraft-nimesi">
+
+    <label>Miksi haluat SMP:lle?</label>
+    <textarea id="reason" rows="3" placeholder="Kirjoita syysi..."></textarea>
+
+    <label>Kuinka aktiivinen olet?</label>
+    <input type="text" id="activity" placeholder="Esim. joka päivä, pari kertaa viikossa...">
+
+    <button onclick="sendApplication()">Lähetä hakemus</button>
+    <button class="close-btn" onclick="closePopup()">Sulje</button>
   </div>
 
-  <div id="mc-desc" style="display:none">Minecraft-IP julkaistaan pian — saat ilmoituksen täältä.</div>
-
-  <div class="toast" id="toast">🌾 Minecraft-IP julkaistaan pian!</div>
-
   <script>
-    const mcBtn = document.getElementById('mcBtn');
-    const toast = document.getElementById('toast');
+    const WEBHOOK_URL = "YOUR_WEBHOOK_URL_HERE";
 
-    mcBtn.addEventListener('click', () => {
-      // Näytetään toast; jos jo näkyy, resetataan timeout
-      toast.classList.remove('show');
-      // lyhyt delay jotta animaatio lähtee alusta tarvittaessa
-      setTimeout(()=> toast.classList.add('show'), 50);
+    function openPopup() {
+      document.getElementById('applyPopup').style.display = 'block';
+    }
 
-      // Poistetaan 4 sekunnin jälkeen
-      clearTimeout(window._cropit_toast_timeout);
-      window._cropit_toast_timeout = setTimeout(()=>{
-        toast.classList.remove('show');
-      }, 4000);
-    });
+    function closePopup() {
+      document.getElementById('applyPopup').style.display = 'none';
+    }
 
-    // Sulje toasti myös klikkaamalla sitä
-    toast.addEventListener('click', ()=> toast.classList.remove('show'));
+    async function sendApplication() {
+      const ign = document.getElementById('ign').value.trim();
+      const reason = document.getElementById('reason').value.trim();
+      const activity = document.getElementById('activity').value.trim();
+
+      if (!ign || !reason || !activity) {
+        alert("Täytä kaikki kentät ennen lähettämistä!");
+        return;
+      }
+
+      const content = {
+        content: `📝 **Uusi Cropit SMP -hakemus**\n**Minecraft-nimi:** ${ign}\n**Syy:** ${reason}\n**Aktiivisuus:** ${activity}`
+      };
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(content)
+        });
+
+        if (response.ok) {
+          alert("✅ Hakemus lähetetty onnistuneesti!");
+          closePopup();
+          document.getElementById('ign').value = '';
+          document.getElementById('reason').value = '';
+          document.getElementById('activity').value = '';
+        } else {
+          alert("❌ Virhe lähetyksessä! Tarkista webhook.");
+        }
+      } catch (err) {
+        alert("⚠️ Jokin meni pieleen. Tarkista yhteys tai webhook-linkki.");
+      }
+    }
   </script>
 </body>
 </html>
-
