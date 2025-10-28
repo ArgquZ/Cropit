@@ -1,117 +1,215 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cropit SMP</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Favicon (sama tiedosto kuin logo) -->
+  <link rel="icon" type="image/png" href="./Cropiserverinlogo.png">
+
+  <!-- Apple touch icon -->
+  <link rel="apple-touch-icon" href="./Cropiserverinlogo.png">
+
+  <meta name="theme-color" content="#6a8f3f">
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #a4c36b, #6a8f3f);
-      color: #fff;
-      text-align: center;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-image: url('https://i.imgur.com/F3S3hZx.jpeg'); /* voit vaihtaa oman taustan */
-      background-size: cover;
-      background-position: center;
+    :root{
+      --accent:#6a8f3f;
+      --accent-2:#9bc76a;
+      --glass: rgba(255,255,255,0.06);
+      --card-bg: rgba(0,0,0,0.45);
+      --btn-bg: #4caf50;
     }
 
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #9fd06b 0%, #5f8a3a 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color:#fff;
     }
 
-    .content {
-      position: relative;
-      z-index: 1;
+    /* Keskitys */
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 20px;
+      box-sizing:border-box;
+      position:relative;
     }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.3rem;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+    .card{
+      width:100%;
+      max-width:980px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12));
+      border-radius:18px;
+      padding:28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      display:flex;
+      gap:24px;
+      align-items:center;
+      justify-content:space-between;
+      backdrop-filter: blur(4px);
     }
 
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: #e7e7e7;
+    .brand {
+      display:flex;
+      gap:18px;
+      align-items:center;
     }
 
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
+    .logo {
+      width:128px;
+      height:128px;
+      flex:0 0 128px;
+      border-radius:14px;
+      overflow:hidden;
+      display:inline-grid;
+      place-items:center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2));
     }
 
-    button, a.button {
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      background: #4caf50;
-      color: #fff;
-      text-decoration: none;
-      transition: 0.2s;
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
     }
 
-    button:hover, a.button:hover {
-      background: #6bd36e;
-      transform: scale(1.05);
+    .title h1{
+      margin:0;
+      font-size:2.2rem;
+      letter-spacing:1px;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.45);
     }
 
-    /* Toast ilmoitus */
+    .title p{
+      margin:6px 0 0 0;
+      color: #eaf6e8;
+      opacity:0.95;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 16px;
+      border-radius:10px;
+      background:var(--btn-bg);
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      cursor:pointer;
+      border:none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transition:transform .14s ease, box-shadow .14s ease;
+    }
+
+    .btn:hover{ transform:translateY(-3px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.12);
+      color:#fff;
+    }
+
+    /* Minecraft-tyylin pienempi teksti esille */
+    .sub {
+      margin-top:8px;
+      font-size:0.92rem;
+      color:#f0f9f0;
+      opacity:0.95;
+    }
+
+    /* Toast (alareuna) */
     .toast {
-      position: fixed;
-      bottom: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      opacity: 0;
-      transition: all 0.5s ease;
-      font-size: 1rem;
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%) translateY(120%);
+      bottom:24px;
+      background: rgba(0,0,0,0.85);
+      color:#fff;
+      padding:12px 18px;
+      border-radius:12px;
+      font-weight:600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .25s;
+      opacity:0;
+      z-index:9999;
+    }
+    .toast.show {
+      transform:translateX(-50%) translateY(0);
+      opacity:1;
     }
 
-    .toast.show {
-      bottom: 30px;
-      opacity: 1;
+    /* Responsiivisuus */
+    @media (max-width:700px){
+      .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+      }
+      .actions{ margin-top:6px; }
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="content">
-    <img src="favicon.png" alt="Cropit logo" style="width:100px; border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.4);">
-    <h1>Cropit SMP</h1>
-    <p>🌾 Uusi suomalainen Minecraft-yhteisö! Tule mukaan viljelemään ja seikkailemaan.</p>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="cropit-title">
+      <div class="brand">
+        <figure class="logo" aria-hidden="true">
+          <img src="./Cropiserverinlogo.png" alt="Cropit-logo">
+        </figure>
 
-    <div class="buttons">
-      <button id="mcBtn">Pelaa Minecraftissa</button>
-      <a class="button" href="https://discord.gg/bFCbWS5Kz6" target="_blank">Liity Discordiin</a>
+        <div class="title">
+          <h1 id="cropit-title">Cropit</h1>
+          <div class="sub">Uusi suomalainen Minecraftyhteisö — tulee pian!</div>
+        </div>
+      </div>
+
+      <div class="actions" role="navigation" aria-label="Toiminnot">
+        <button class="btn" id="mcBtn" aria-describedby="mc-desc">Pelaa Minecraftissa</button>
+        <a class="btn ghost" id="discordBtn" href="https://discord.gg/bFCbWS5Kz6" target="_blank" rel="noopener noreferrer">Liity Discordiin</a>
+      </div>
     </div>
   </div>
+
+  <div id="mc-desc" style="display:none">Minecraft-IP julkaistaan pian — saat ilmoituksen täältä.</div>
 
   <div class="toast" id="toast">🌾 Minecraft-IP julkaistaan pian!</div>
 
   <script>
-    const mcBtn = document.getElementById("mcBtn");
-    const toast = document.getElementById("toast");
+    const mcBtn = document.getElementById('mcBtn');
+    const toast = document.getElementById('toast');
 
-    mcBtn.addEventListener("click", () => {
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
+    mcBtn.addEventListener('click', () => {
+      // Näytetään toast; jos jo näkyy, resetataan timeout
+      toast.classList.remove('show');
+      // lyhyt delay jotta animaatio lähtee alusta tarvittaessa
+      setTimeout(()=> toast.classList.add('show'), 50);
+
+      // Poistetaan 4 sekunnin jälkeen
+      clearTimeout(window._cropit_toast_timeout);
+      window._cropit_toast_timeout = setTimeout(()=>{
+        toast.classList.remove('show');
+      }, 4000);
     });
+
+    // Sulje toasti myös klikkaamalla sitä
+    toast.addEventListener('click', ()=> toast.classList.remove('show'));
   </script>
 </body>
 </html>
+
