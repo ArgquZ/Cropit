@@ -35,6 +35,8 @@
       margin-top: 30px;
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     button {
@@ -104,22 +106,23 @@
       margin-top: 10px;
     }
 
-    /* Keskelle tuleva virhepopup */
-    .error-popup {
+    /* Popup keskelle */
+    .center-popup {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(255, 80, 80, 0.95);
+      background: rgba(255, 255, 255, 0.15);
       color: white;
-      padding: 20px 30px;
+      padding: 25px 35px;
       border-radius: 15px;
       box-shadow: 0 0 25px rgba(0,0,0,0.4);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-align: center;
       animation: popIn 0.3s ease forwards;
       z-index: 10;
+      backdrop-filter: blur(10px);
     }
 
     @keyframes popIn {
@@ -135,6 +138,13 @@
       from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
     }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -145,6 +155,7 @@
 
   <div class="buttons">
     <button onclick="window.open('https://discord.gg/bFCbWS5Kz6')">Discord</button>
+    <button onclick="showServerPopup()">Minecraft-serverin IP</button>
     <button onclick="togglePopup()">Hae CropitSMP:lle</button>
   </div>
 
@@ -163,27 +174,39 @@
     </div>
   </div>
 
-  <div class="error-popup" id="error-popup">Täytä kaikki kohdat ennen lähettämistä!</div>
+  <div class="center-popup" id="error-popup">Täytä kaikki kohdat ennen lähettämistä!</div>
+  <div class="center-popup" id="server-popup">Serveriä ei ole vielä avattu 🔒</div>
+
+  <footer>© 2025 Cropit – Hakemukset käsitellään Discordissa</footer>
 
   <script>
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1432615073657913404/DmpECDtO8zx91vVKXRALw9F2zyVgKS3u5JSHMzOwVcrEjQIkzkgahlFcbrQCY2lNioSl";
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1432615073657913404/DmpECDtO8zx91vVKXRALw9F2zyVgKS3u5JSHMzOwVcrEjQIkzkgahlFcbrQCY2lNioSl"; 
 
     function togglePopup() {
       const popup = document.getElementById("popup");
       popup.style.display = popup.style.display === "block" ? "none" : "block";
     }
 
-    function showError(msg = "Täytä kaikki kohdat ennen lähettämistä!") {
-      const errorPopup = document.getElementById("error-popup");
-      errorPopup.textContent = msg;
-      errorPopup.style.display = "block";
+    function showCenterPopup(id, msg, color = "#ff5050") {
+      const popup = document.getElementById(id);
+      popup.textContent = msg;
+      popup.style.background = color;
+      popup.style.display = "block";
       setTimeout(() => {
-        errorPopup.classList.add("fadeOut");
+        popup.classList.add("fadeOut");
         setTimeout(() => {
-          errorPopup.style.display = "none";
-          errorPopup.classList.remove("fadeOut");
+          popup.style.display = "none";
+          popup.classList.remove("fadeOut");
         }, 300);
       }, 1800);
+    }
+
+    function showError(msg) {
+      showCenterPopup("error-popup", msg, "rgba(255, 80, 80, 0.95)");
+    }
+
+    function showServerPopup() {
+      showCenterPopup("server-popup", "Serveriä ei ole vielä avattu 🔒", "rgba(255, 180, 0, 0.9)");
     }
 
     async function sendApplication() {
@@ -198,7 +221,7 @@
       });
 
       if (missing) {
-        showError();
+        showError("Täytä kaikki kohdat ennen lähettämistä!");
         return;
       }
 
