@@ -205,14 +205,14 @@
   <div class="button-container">
     <button onclick="showServerInfo()">Minecraft-serverin IP</button>
     <button onclick="window.open('https://discord.gg/bFCbWS5Kz6')">Discord</button>
-    <button onclick="openModal()">Hae CropitSMP:lle</button>
+    <button onclick="openModal()">Hae Cropit-sivilisaatioon</button>
   </div>
 
   <!-- Hakemus-ponnahdus -->
   <div class="modal-bg" id="modalBg">
     <div class="modal">
       <button class="close-btn" onclick="closeModal()">×</button>
-      <h2>CropitSMP Hakemus</h2>
+      <h2>Cropit-sivilisaatio hakemus</h2>
       <form id="applyForm">
         <input type="text" id="name" placeholder="Minecraft-nimi">
         <input type="text" id="age" placeholder="Ikä">
@@ -227,6 +227,7 @@
 
   <div class="notice">
     ⚠️ Croppien palvelimilla pelaamalla hyväksyt, että tapahtumien yhteydessä sinusta voidaan tuottaa sosiaalisen median sisältöä. ⚠️
+                                                    Palvelimella oleskellessa hyväksyt tämän!
   </div>
 
   <footer>
@@ -282,7 +283,7 @@
       }
 
       const payload = {
-        content: `📝 **Uusi hakemus CropitSMP:lle**\n**Nimi:** ${data.name}\n**Ikä:** ${data.age}\n**Vahvuudet:** ${data.strengths}\n**Heikkoudet:** ${data.weaknesses}\n**Miksi mukaan:** ${data.reason}\n**Muuta:** ${data.other}`
+        content: `📝 **Uusi hakemus Cropit-sivilisaatioon**\n**Nimi:** ${data.name}\n**Ikä:** ${data.age}\n**Vahvuudet:** ${data.strengths}\n**Heikkoudet:** ${data.weaknesses}\n**Miksi mukaan:** ${data.reason}\n**Muuta:** ${data.other}`
       };
 
       try {
